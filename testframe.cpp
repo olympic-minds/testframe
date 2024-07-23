@@ -134,7 +134,6 @@ std::vector<T> partition(int size, T sum) {
     return partition(size, sum, T(1));
 }
 
-
 template<typename T>
 std::vector<T> perm(T size) {
     return perm(size, T(0));

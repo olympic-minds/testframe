@@ -1,6 +1,8 @@
 #include "graph.hpp"
-#include "testlib.hpp"
+#include "testframe.hpp"
 #include <queue>
+#include <set>
+#include <utility>
 
 Graph& Graph::relabelNodes() {
     auto perm = rnd.perm(getNumberOfNodes() );

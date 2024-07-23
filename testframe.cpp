@@ -2,7 +2,7 @@
 
 /* Returns `size` unordered (unsorted) distinct numbers between `0` and `upper`-1. */
 template<typename T>
-std::vector<T> distinct(int size, T upper) {
+std::vector<T> Rand::distinct(int size, T upper) {
     if (size < 0) {
         // __testlib_fail("random_t::distinct expected size >= 0");
     }
@@ -21,7 +21,7 @@ std::vector<T> distinct(int size, T upper) {
 
 /* Returns random permutation of the given size (values are between `first` and `first`+size-1)*/
 template<typename T, typename E>
-std::vector<E> perm(T size, E first) {
+std::vector<E> Rand::perm(T size, E first) {
     if (size < 0) {
         // __testlib_fail("random_t::perm(T size, E first = 0): size must non-negative");
     }
@@ -39,7 +39,7 @@ std::vector<E> perm(T size, E first) {
 
 /* Returns `size` unordered (unsorted) distinct numbers between `from` and `to`. */
 template<typename T>
-std::vector<T> distinct(int size, T from, T to) {
+std::vector<T> Rand::distinct(int size, T from, T to) {
     std::vector<T> result;
     if (size == 0)
         return result;
@@ -81,7 +81,7 @@ std::vector<T> distinct(int size, T from, T to) {
 
 /* Returns random (unsorted) partition which is a representation of sum as a sum of integers not less than min_part. */
 template<typename T>
-std::vector<T> partition(int size, T sum, T min_part) {
+std::vector<T> Rand::partition(int size, T sum, T min_part) {
     if (size < 0) {
         // __testlib_fail("random_t::partition: size < 0");
     }
@@ -130,11 +130,11 @@ std::vector<T> partition(int size, T sum, T min_part) {
 
 /* Returns random (unsorted) partition which is a representation of sum as a sum of positive integers. */
 template<typename T>
-std::vector<T> partition(int size, T sum) {
+std::vector<T> Rand::partition(int size, T sum) {
     return partition(size, sum, T(1));
 }
 
 template<typename T>
-std::vector<T> perm(T size) {
+std::vector<T> Rand::perm(T size) {
     return perm(size, T(0));
 }

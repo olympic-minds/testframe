@@ -28,9 +28,7 @@ public:
 
     /* Returns random (unsorted) partition which is a representation of sum as a sum of positive integers. */
     template<typename T>
-    std::vector<T> Rand::partition(int size, T sum) {
-        return partition(size, sum, T(1));
-    }
+    std::vector<T> partition(int size, T sum);
 
     /* Returns `size` unordered (unsorted) distinct numbers between `from` and `to`. */
     template<typename T>

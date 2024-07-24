@@ -302,6 +302,7 @@ template void Rand::shuffle<std::vector<std::pair<int, int>>::iterator>(
     std::vector<std::pair<int, int>>::iterator begin,
     std::vector<std::pair<int, int>>::iterator end
 );
+
 const unsigned long long Rand::multiplier = 0x5DEECE66DLL;
 const unsigned long long Rand::addend = 0xBLL;
 const unsigned long long Rand::mask = (1LL << 48) - 1;

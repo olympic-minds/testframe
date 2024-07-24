@@ -6,8 +6,8 @@
 #include <cmath>
 
 Graph& Graph::relabelNodes() {
-    auto perm = rnd.perm<uint64_t>( getNumberOfNodes() );
-    std::vector<uint64_t>inv_perm(getNumberOfNodes() );
+    auto perm = rnd.perm(getNumberOfNodes());
+    std::vector<uint64_t>inv_perm(getNumberOfNodes());
     for (uint64_t i = 0; i < getNumberOfNodes() ; i++) {
         inv_perm[perm[i]] = i;
     }

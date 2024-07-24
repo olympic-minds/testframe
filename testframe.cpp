@@ -119,18 +119,6 @@ int Rand::wnext(int from, int to, int type) {
     return wnext(to - from + 1, type) + from;
 }
 
-template<typename _RandomAccessIter>
-void Rand::shuffle(_RandomAccessIter __first, _RandomAccessIter __last) {
-    if (__first == __last) return;
-    for (_RandomAccessIter __i = __first + 1; __i != __last; ++__i)
-        std::iter_swap(__i, __first + rnd.next(int(__i - __first) + 1));
-}
-
-template void Rand::shuffle<std::vector<std::pair<int, int>>::iterator>(
-    std::vector<std::pair<int, int>>::iterator begin,
-    std::vector<std::pair<int, int>>::iterator end
-);
-
 const unsigned long long Rand::multiplier = 0x5DEECE66DLL;
 const unsigned long long Rand::addend = 0xBLL;
 const unsigned long long Rand::mask = (1LL << 48) - 1;

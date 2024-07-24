@@ -199,7 +199,13 @@ public:
     void shuffle(_RandomAccessIter __first, _RandomAccessIter __last);
 };
 
-
 extern Rand rnd;
+
+template<typename _RandomAccessIter>
+void Rand::shuffle(_RandomAccessIter __first, _RandomAccessIter __last) {
+    if (__first == __last) return;
+    for (_RandomAccessIter __i = __first + 1; __i != __last; ++__i)
+        std::iter_swap(__i, __first + rnd.next(int(__i - __first) + 1));
+}
 
 #endif

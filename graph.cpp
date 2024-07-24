@@ -23,7 +23,7 @@ Graph& Graph::relabelNodes() {
 
 uint64_t Graph::undirectedConnectedComponentsNumber() {
     uint64_t scc_number = 0;
-    bool visited[getNumberOfNodes() ];
+    std::vector<bool> visited(getNumberOfNodes() , false);
 
     std::function<void(uint64_t)> dfs = [&](uint64_t v) -> void {
         visited[v] = true;
@@ -169,10 +169,10 @@ Graph Graph::constructForestGraph(uint64_t nodes, uint64_t numberOfTrees) {
 
 Graph Graph::constructTreeGraph(uint64_t nodes) { return constructForestGraph(nodes, 1); }
 
-Graph Graph::constructSimplerJellyfishGraph(uint64_t nodes, uint64_t cycleSize, uint64_t maxTentacleLength, uint64_t numberOfTentacles) {
+Graph Graph::constructSimplerJellyfishGraph(uint64_t nodes, uint64_t cycleSize, uint64_t minTentacleLength, uint64_t numberOfTentacles) {
     std::vector<std::vector<uint64_t>> g;
     g.resize(nodes);
-    std::vector<uint64_t>pa = rnd.partition(nodes - cycleSize, numberOfTentacles, maxTentacleLength);
+    std::vector<uint64_t>pa = rnd.partition(numberOfTentacles, nodes - cycleSize, minTentacleLength);
     uint64_t next = 1;
     uint64_t prev = 0;
     for (uint64_t i = 0; i < cycleSize - 1; i++) {
@@ -195,8 +195,8 @@ Graph Graph::constructSimplerJellyfishGraph(uint64_t nodes, uint64_t cycleSize, 
     return Graph(g).relabelNodes();
 }
 
-Graph Graph::constructStarfishGraph(uint64_t nodes, uint64_t maxRayLength, uint64_t numberOfRays) {
-    return constructSimplerJellyfishGraph(nodes, 1, maxRayLength, numberOfRays);
+Graph Graph::constructStarfishGraph(uint64_t nodes, uint64_t minRayLength, uint64_t numberOfRays) {
+    return constructSimplerJellyfishGraph(nodes, 1, minRayLength, numberOfRays);
 }
 
 /* Silkworm of size n is a path of size (n+1)/2 and one private node for each node from path */

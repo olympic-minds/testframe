@@ -7,9 +7,15 @@
  * @note The caller is responsible for closing the file streams using its close() method.
  */
 std::pair<std::ofstream, std::ofstream> setupTest(uint64_t testNumber) {
-    std::string promptInPath = format("%s/%lu.in", dirs.at("promptInputDirectory").c_str(), testNumber);
-    std::string solutionInPath = format("%s/%lu.in", dirs.at("solutionInputDirectory").c_str(), testNumber);
 
+    std::ostringstream promptStream;
+    promptStream << dirs.at("promptInputDirectory") << "/" << testNumber << ".in";
+    std::string promptInPath = promptStream.str();
+
+    std::ostringstream solutionStream;
+    solutionStream << dirs.at("solutionInputDirectory") << "/" << testNumber << ".in";
+    std::string solutionInPath = solutionStream.str();
+    
     std::ofstream promptInFile(promptInPath);
     if (!promptInFile) {
         std::cerr << "Error: Could not open the file " << promptInPath << std::endl;

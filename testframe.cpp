@@ -1,6 +1,16 @@
 #include "testframe.hpp"
 #include <climits>
 #include <cmath>
+#include <set>
+
+Rand rnd;
+
+static inline double crop(double value, double a, double b) {
+    value = std::min(std::max(value, a), b);
+    if (value >= b)
+        value = std::nexttoward(b, a);
+    return value;
+}
 
 /* Returns `size` unordered (unsorted) distinct numbers between `0` and `upper`-1. */
 template<typename T>
@@ -22,25 +32,6 @@ std::vector<T> Rand::distinct(int size, T upper) {
     }
 
     return distinct(size, T(0), upper - 1);
-}
-
-/* Returns random permutation of the given size (values are between `first` and `first`+size-1)*/
-template<typename T, typename E>
-std::vector<E> Rand::perm(T size, E first) {
-    if (size < 0) {
-        // __testlib_fail("random_t::perm(T size, E first = 0): size must non-negative");
-        exit(1);
-    }
-    else if (size == 0)
-        return std::vector<E>();
-    std::vector<E> p(size);
-    E current = first;
-    for (T i = 0; i < size; i++)
-        p[i] = current++;
-    if (size > 1)
-        for (T i = 1; i < size; i++)
-            std::swap(p[i], p[next(i + 1)]);
-    return p;
 }
 
 /* Returns `size` unordered (unsorted) distinct numbers between `from` and `to`. */
@@ -88,6 +79,7 @@ std::vector<T> Rand::distinct(int size, T from, T to) {
 
     return result;
 }
+template std::vector<uint64_t> Rand::distinct(int size, uint64_t from);
 
 /* Returns random (unsorted) partition which is a representation of sum as a sum of integers not less than min_part. */
 template<typename T>
@@ -144,17 +136,50 @@ std::vector<T> Rand::partition(int size, T sum, T min_part) {
     return result;
 }
 
+template std::vector<int32_t> Rand::partition(int size, int32_t sum, int32_t min_part);
+template std::vector<int64_t> Rand::partition(int size, int64_t sum, int64_t min_part);
+
 /* Returns random (unsorted) partition which is a representation of sum as a sum of positive integers. */
 template<typename T>
 std::vector<T> Rand::partition(int size, T sum) {
     return partition(size, sum, T(1));
 }
 
+template std::vector<uint64_t> Rand::partition(int size, uint64_t sum);
+
+/* Returns random permutation of the given size (values are between `first` and `first`+size-1)*/
+template<typename T, typename E>
+std::vector<E> Rand::perm(T size, E first) {
+    if (size < 0) {
+        exit(1);
+        // __testlib_fail("random_t::perm(T size, E first = 0): size must non-negative");
+    }
+    else if (size == 0)
+        return std::vector<E>();
+    std::vector<E> p(size);
+    E current = first;
+    for (T i = 0; i < size; i++)
+        p[i] = current++;
+    if (size > 1)
+        for (T i = 1; i < size; i++)
+            std::swap(p[i], p[next((int64_t)i + 1LL)]);
+    return p;
+
+}
+template std::vector<int32_t> Rand::perm(int32_t size, int32_t start);
+template std::vector<uint32_t> Rand::perm(uint32_t size, uint32_t start);
+template std::vector<int64_t> Rand::perm(int64_t size, int64_t first);
+template std::vector<uint64_t> Rand::perm(uint64_t size, uint64_t first);
+
 template<typename T>
 std::vector<T> Rand::perm(T size) {
     return perm(size, T(0));
 }
 
+template std::vector<int32_t> Rand::perm(int32_t size);
+template std::vector<uint32_t> Rand::perm(uint32_t size);
+template std::vector<int64_t> Rand::perm(int64_t size);
+template std::vector<uint64_t> Rand::perm(uint64_t size);
 
 long long Rand::nextBits(int bits) {
     if (bits <= 48) {
@@ -233,14 +258,50 @@ double Rand::next() {
     return crop((double) (left + right) / (double) (1LL << 53), 0.0, 1.0);
 }
 
-static inline double crop(double value, double a, double b) {
-    value = std::min(std::max(value, a), b);
-    if (value >= b)
-        value = std::nexttoward(b, a);
-    return value;
+
+
+int Rand::next(int from, int to) {
+    return int(next((long long) to - from + 1) + from);
+}
+
+/* Random value in range [0, nodes-1]. */
+long long Rand::next(long long nodes) {
+    if (nodes <= 0) {
+        // __testlib_fail("random_t::next(long long nodes): nodes must be positive");
+        exit(1);
+    }
+
+    const long long limit = LLONG_MAX / nodes * nodes;
+
+    long long bits;
+    do {
+        bits = nextBits(63);
+    } while (bits >= limit);
+
+    return bits % nodes;
 }
 
 
+/* Returns weighted random value in range [from, to]. */
+int Rand::wnext(int from, int to, int type) {
+    if (from > to) {
+        exit(1);
+        // __testlib_fail("random_t::wnext(int from, int to, int type): from can't not exceed to");
+    }
+    return wnext(to - from + 1, type) + from;
+}
+
+template<typename _RandomAccessIter>
+void Rand::shuffle(_RandomAccessIter __first, _RandomAccessIter __last) {
+    if (__first == __last) return;
+    for (_RandomAccessIter __i = __first + 1; __i != __last; ++__i)
+        std::iter_swap(__i, __first + rnd.next(int(__i - __first) + 1));
+}
+
+template void Rand::shuffle<std::vector<std::pair<int, int>>::iterator>(
+    std::vector<std::pair<int, int>>::iterator begin,
+    std::vector<std::pair<int, int>>::iterator end
+);
 const unsigned long long Rand::multiplier = 0x5DEECE66DLL;
 const unsigned long long Rand::addend = 0xBLL;
 const unsigned long long Rand::mask = (1LL << 48) - 1;

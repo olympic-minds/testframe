@@ -15,6 +15,8 @@ public:
     /* Returns random permutation of the given size (values are between 0 and size-1)*/
     template<typename T>
     std::vector<T> perm(T size);
+    
+    // std::vector<int> perm(int size);
 
     /* Returns random permutation of the given size (values are between `first` and `first`+size-1)*/
     template<typename T, typename E>
@@ -26,7 +28,9 @@ public:
 
     /* Returns random (unsorted) partition which is a representation of sum as a sum of positive integers. */
     template<typename T>
-    std::vector<T> partition(int size, T sum);
+    std::vector<T> Rand::partition(int size, T sum) {
+        return partition(size, sum, T(1));
+    }
 
     /* Returns `size` unordered (unsorted) distinct numbers between `from` and `to`. */
     template<typename T>
@@ -36,7 +40,7 @@ public:
     template<typename T>
     std::vector<T> distinct(int size, T upper);
 
-    long long Rand::nextBits(int bits);
+    long long nextBits(int bits);
 
     /* Random double value in range [0, 1). */
     int next(int nodes);
@@ -53,8 +57,20 @@ public:
     
     /* Random double value in range [0, 1). */
     double next();
+
+    /* Returns random value in range [from,to]. */
+    int next(int from, int to);
+
+    /* Random value in range [0, nodes-1]. */
+    long long next(long long nodes);
+
+    int wnext(int from, int to, int type);
+
+    template<typename _RandomAccessIter>
+    void shuffle(_RandomAccessIter __first, _RandomAccessIter __last);
 };
 
-Rand rnd;
+
+extern Rand rnd;
 
 #endif

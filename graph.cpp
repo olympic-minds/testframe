@@ -3,9 +3,10 @@
 #include <queue>
 #include <set>
 #include <utility>
+#include <cmath>
 
 Graph& Graph::relabelNodes() {
-    auto perm = rnd.perm(getNumberOfNodes() );
+    auto perm = rnd.perm<uint64_t>( getNumberOfNodes() );
     std::vector<uint64_t>inv_perm(getNumberOfNodes() );
     for (uint64_t i = 0; i < getNumberOfNodes() ; i++) {
         inv_perm[perm[i]] = i;
@@ -119,7 +120,7 @@ Graph Graph::constructForestGraph(uint64_t nodes, uint64_t numberOfTrees) {
             continue;
         }
         for (uint64_t i = 0; i < currentNodes - 2; i++) {
-            uint64_t x = rnd.next(currentNodes);
+            uint64_t x = rnd.next((long long)currentNodes);
             prufer.push_back(x);
             ++cnt[x];
         }
@@ -183,7 +184,7 @@ Graph Graph::constructSimplerJellyfishGraph(uint64_t nodes, uint64_t cycleSize, 
     g[prev].push_back(0);
     g[0].push_back(prev);
     for (uint64_t raySize : pa) {
-        prev = rnd.next(cycleSize);  // Ray starts at node in [0, cycyleSize - 1]
+        prev = rnd.next((long long)cycleSize);  // Ray starts at node in [0, cycyleSize - 1]
         for (uint64_t i = 0; i < raySize; i++) {
             g[prev].push_back(next);
             g[next].push_back(prev);
@@ -240,7 +241,7 @@ Graph Graph::constructTreeOfBoundedDegreeGraph(uint64_t nodes, uint64_t minDegre
 }
 
 Graph Graph::constructSparseGraph(uint64_t nodes) {
-    uint64_t number_of_edges = rnd.wnext((uint64_t)0, nodes * (uint64_t)sqrt(nodes) / 2, -1);
+    uint64_t number_of_edges = rnd.wnext((uint64_t)0, nodes * (uint64_t)std::sqrt(nodes) / 2, -1);
     std::set<std::pair<int, int>> edges;
     while ((int)edges.size() < number_of_edges) {
         auto vert = rnd.distinct(2, nodes);
@@ -266,7 +267,8 @@ Graph Graph::constructDenseGraph(uint64_t nodes) {
             all_edges.emplace_back(i, j);
         }
     }
-    shuffle(all_edges.begin(), all_edges.end());
+    
+    rnd.shuffle(all_edges.begin(), all_edges.end());
     uint64_t number_of_edges = rnd.wnext(nodes * (int)sqrt(nodes) / 2, nodes * (nodes - 1) / 2, 1);
     all_edges.resize(number_of_edges);
     std::vector<std::vector<uint64_t>> g(nodes);

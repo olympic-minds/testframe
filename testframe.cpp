@@ -78,7 +78,7 @@ int Rand::wnext(int nodes, int type) {
         else
             p = 1 - std::pow(next() + 0.0, 1.0 / (-type + 1));
 
-        return crop((int) (double(nodes) * p), 0, nodes);
+        return crop(nodes * p, 0., static_cast<int>(nodes));
     }
 }
 

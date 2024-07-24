@@ -12,174 +12,6 @@ static inline double crop(double value, double a, double b) {
     return value;
 }
 
-/* Returns `size` unordered (unsorted) distinct numbers between `0` and `upper`-1. */
-template<typename T>
-std::vector<T> Rand::distinct(int size, T upper) {
-    if (size < 0) {
-        // __testlib_fail("random_t::distinct expected size >= 0");
-        exit(1);
-    }
-    if (size == 0)
-        return std::vector<T>();
-
-    if (upper <= 0) { 
-        // __testlib_fail("random_t::distinct expected upper > 0");
-        exit(1);
-    }
-    if (size > upper) {
-        // __testlib_fail("random_t::distinct expected size <= upper");
-        exit(1);
-    }
-
-    return distinct(size, T(0), upper - 1);
-}
-
-/* Returns `size` unordered (unsorted) distinct numbers between `from` and `to`. */
-template<typename T>
-std::vector<T> Rand::distinct(int size, T from, T to) {
-    std::vector<T> result;
-    if (size == 0)
-        return result;
-
-    if (from > to) {
-        // __testlib_fail("random_t::distinct expected from <= to");   
-        exit(1);
-    }
-
-    if (size < 0) {
-        // __testlib_fail("random_t::distinct expected size >= 0");
-        exit(1);
-    }
-
-    uint64_t nodes = to - from + 1;
-    if (uint64_t(size) > nodes) {
-        // __testlib_fail("random_t::distinct expected size <= to - from + 1");
-        exit(1);
-    }
-
-    double expected = 0.0;
-    for (int i = 1; i <= size; i++)
-        expected += double(nodes) / double(nodes - i + 1);
-
-    if (expected < double(nodes)) {
-        std::set<T> vals;
-        while (int(vals.size()) < size) {
-            T x = T(next(from, to));
-            if (vals.insert(x).second)
-                result.push_back(x);
-        }
-    } else {
-        if (nodes > 1000000000) {
-            // __testlib_fail("random_t::distinct here expected to - from + 1 <= 1000000000");
-            exit(1);
-        }
-        std::vector<T> p(perm(int(nodes), from));
-        result.insert(result.end(), p.begin(), p.begin() + size);
-    }
-
-    return result;
-}
-template std::vector<uint64_t> Rand::distinct(int size, uint64_t from);
-
-/* Returns random (unsorted) partition which is a representation of sum as a sum of integers not less than min_part. */
-template<typename T>
-std::vector<T> Rand::partition(int size, T sum, T min_part) {
-    if (size < 0) {
-        // __testlib_fail("random_t::partition: size < 0");
-        exit(1);
-    }
-    if (size == 0 && sum != 0) {
-        // __testlib_fail("random_t::partition: size == 0 && sum != 0");
-        exit(1);
-    }
-    if (min_part * size > sum) {
-        // __testlib_fail("random_t::partition: min_part * size > sum");
-        exit(1);
-    }
-    if (size == 0 && sum == 0)
-        return std::vector<T>();
-
-    T sum_ = sum;
-    sum -= min_part * size;
-
-    std::vector<T> septums(size);
-    std::vector<T> d = distinct(size - 1, T(1), T(sum + size - 1));
-    for (int i = 0; i + 1 < size; i++)
-        septums[i + 1] = d[i];
-    sort(septums.begin(), septums.end());
-
-    std::vector<T> result(size);
-    for (int i = 0; i + 1 < size; i++)
-        result[i] = septums[i + 1] - septums[i] - 1;
-    result[size - 1] = sum + size - 1 - septums.back();
-
-    for (std::size_t i = 0; i < result.size(); i++)
-        result[i] += min_part;
-
-    T result_sum = 0;
-    for (std::size_t i = 0; i < result.size(); i++)
-        result_sum += result[i];
-    if (result_sum != sum_) {
-        // __testlib_fail("random_t::partition: partition sum is expected to be the given sum");
-        exit(1);
-    }
-
-    if (*std::min_element(result.begin(), result.end()) < min_part) {
-        // __testlib_fail("random_t::partition: partition min is expected to be no less than the given min_part");
-        exit(1);
-    }
-
-    if (int(result.size()) != size || result.size() != (size_t) size) {
-        //  __testlib_fail("random_t::partition: partition size is expected to be equal to the given size");
-        exit(1);
-    }
-    return result;
-}
-
-template std::vector<int32_t> Rand::partition(int size, int32_t sum, int32_t min_part);
-template std::vector<int64_t> Rand::partition(int size, int64_t sum, int64_t min_part);
-
-/* Returns random (unsorted) partition which is a representation of sum as a sum of positive integers. */
-template<typename T>
-std::vector<T> Rand::partition(int size, T sum) {
-    return partition(size, sum, T(1));
-}
-
-template std::vector<uint64_t> Rand::partition(int size, uint64_t sum);
-
-/* Returns random permutation of the given size (values are between `first` and `first`+size-1)*/
-template<typename T, typename E>
-std::vector<E> Rand::perm(T size, E first) {
-    if (size < 0) {
-        exit(1);
-        // __testlib_fail("random_t::perm(T size, E first = 0): size must non-negative");
-    }
-    else if (size == 0)
-        return std::vector<E>();
-    std::vector<E> p(size);
-    E current = first;
-    for (T i = 0; i < size; i++)
-        p[i] = current++;
-    if (size > 1)
-        for (T i = 1; i < size; i++)
-            std::swap(p[i], p[next((int64_t)i + 1LL)]);
-    return p;
-
-}
-template std::vector<int32_t> Rand::perm(int32_t size, int32_t start);
-template std::vector<uint32_t> Rand::perm(uint32_t size, uint32_t start);
-template std::vector<int64_t> Rand::perm(int64_t size, int64_t first);
-template std::vector<uint64_t> Rand::perm(uint64_t size, uint64_t first);
-
-template<typename T>
-std::vector<T> Rand::perm(T size) {
-    return perm(size, T(0));
-}
-
-template std::vector<int32_t> Rand::perm(int32_t size);
-template std::vector<uint32_t> Rand::perm(uint32_t size);
-template std::vector<int64_t> Rand::perm(int64_t size);
-template std::vector<uint64_t> Rand::perm(uint64_t size);
 
 long long Rand::nextBits(int bits) {
     if (bits <= 48) {
@@ -201,8 +33,6 @@ long long Rand::nextBits(int bits) {
         return left ^ right;
     }
 }
-
-
 
 /* Random value in range [0, nodes-1]. */
 int Rand::next(int nodes) {
@@ -257,8 +87,6 @@ double Rand::next() {
     long long right = nextBits(27);
     return crop((double) (left + right) / (double) (1LL << 53), 0.0, 1.0);
 }
-
-
 
 int Rand::next(int from, int to) {
     return int(next((long long) to - from + 1) + from);

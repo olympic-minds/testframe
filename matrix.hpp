@@ -125,6 +125,86 @@ public:
     int64_t getTrace() const;
 
     int64_t getDeterminant() const;
+
+    Matrix<T> operator+(const Matrix<T>& other) const {
+        if (matrix.size() != other.matrix.size() || matrix[0].size() != other.matrix[0].size()) {
+            throw std::invalid_argument("Matrices must have the same dimensions for addition");
+        }
+
+        Matrix<T> result(matrix.size(), matrix[0].size());
+        for (size_t i = 0; i < matrix.size(); ++i) {
+            for (size_t j = 0; j < matrix[i].size(); ++j) {
+                result.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
+            }
+        }
+        return result;
+    }
+
+    Matrix<T> operator*(const Matrix<T>& other) const {
+        if (matrix[0].size() != other.matrix.size()) {
+            throw std::invalid_argument("Matrices must have compatible dimensions for multiplication");
+        }
+
+        Matrix<T> result(matrix.size(), other.matrix[0].size());
+        for (size_t i = 0; i < result.matrix.size(); ++i) {
+            for (size_t j = 0; j < result.matrix[0].size(); ++j) {
+                result.matrix[i][j] = T();
+                for (size_t k = 0; k < matrix[0].size(); ++k) {
+                    result.matrix[i][j] += matrix[i][k] * other.matrix[k][j];
+                }
+            }
+        }
+        return result;
+    }
+
+    Matrix<T> operator*(const T& scalar) const {
+        Matrix<T> result(matrix.size(), matrix[0].size());
+        for (size_t i = 0; i < matrix.size(); ++i) {
+            for (size_t j = 0; j < matrix[i].size(); ++j) {
+                result.matrix[i][j] = matrix[i][j] * scalar;
+            }
+        }
+        return result;
+    }
+
+
+    Matrix<T> operator-(const Matrix<T>& other) const {
+        if (matrix.size() != other.matrix.size() || matrix[0].size() != other.matrix[0].size()) {
+            throw std::invalid_argument("Matrices must have the same dimensions for subtraction");
+        }
+
+        Matrix<T> result(matrix.size(), matrix[0].size());
+        for (size_t i = 0; i < matrix.size(); ++i) {
+            for (size_t j = 0; j < matrix[i].size(); ++j) {
+                result.matrix[i][j] = matrix[i][j] - other.matrix[i][j];
+            }
+        }
+        return result;
+    }
+
+    Matrix<T> transpose() const {
+        Matrix<T> result(matrix[0].size(), matrix.size());
+        for (size_t i = 0; i < matrix.size(); ++i) {
+            for (size_t j = 0; j < matrix[i].size(); ++j) {
+                result.matrix[j][i] = matrix[i][j];
+            }
+        }
+        return result;
+    }
+
+    bool operator==(const Matrix<T>& other) const {
+        if (matrix.size() != other.matrix.size() || matrix[0].size() != other.matrix[0].size()) {
+            return false;
+        }
+        for (size_t i = 0; i < matrix.size(); ++i) {
+            for (size_t j = 0; j < matrix[i].size(); ++j) {
+                if (matrix[i][j] != other.matrix[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 };
 
 #endif

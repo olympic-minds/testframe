@@ -98,7 +98,9 @@ Graph Graph::constructShallowForestGraph(uint64_t nodes, uint64_t numberOfTrees)
     return Graph(g).relabelNodes();
 }
 
-Graph Graph::constructShallowTreeGraph(uint64_t nodes) { return constructShallowForestGraph(nodes, 1); }
+Graph Graph::constructShallowTreeGraph(uint64_t nodes) {
+    return constructShallowForestGraph(nodes, 1);
+}
 
 Graph Graph::constructForestGraph(uint64_t nodes, uint64_t numberOfTrees) {
     std::vector<std::vector<uint64_t>> g;
@@ -166,7 +168,9 @@ Graph Graph::constructForestGraph(uint64_t nodes, uint64_t numberOfTrees) {
     return Graph(g).relabelNodes();
 }
 
-Graph Graph::constructTreeGraph(uint64_t nodes) { return constructForestGraph(nodes, 1); }
+Graph Graph::constructTreeGraph(uint64_t nodes) {
+    return constructForestGraph(nodes, 1);
+}
 
 Graph Graph::constructSimplerJellyfishGraph(uint64_t nodes, uint64_t cycleSize, uint64_t minTentacleLength,
                                             uint64_t numberOfTentacles) {

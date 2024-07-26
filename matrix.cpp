@@ -17,7 +17,7 @@ Matrix<T> Matrix<T>::getCofactor(uint64_t delRow, uint64_t delCol) const {
         }
     }
 
-    return std::move(temp);
+    return temp;
 }
 
 template <ConvertibleToInt64_t T>
@@ -47,13 +47,4 @@ int64_t Matrix<T>::getDeterminant() const {
     }
 
     return det;
-}
-
-template <ConvertibleToInt64_t T>
-static Matrix<T> constructIdentityMatrix(uint64_t size) {
-    std::vector<std::vector<T>> matrix(size, std::vector<T>(size, 0));
-    for (uint64_t i = 0; i < size; ++i) {
-        matrix[i][i] = 1;
-    }
-    return Matrix(matrix);
 }

@@ -2,16 +2,19 @@
 #define MATRIX_H_
 
 #include "utils.hpp"
+#include <cassert>
+
+enum class MatrixPrintFormat { 
+    Prompt,
+    Solution
+};
 
 template <ConvertibleToInt64_t T>
 class Matrix {
 public:
     std::vector<std::vector<T>> matrix;
-    enum PrintFormat { 
-        Prompt,
-        Solution
-    };
 
+    using PrintFormat = MatrixPrintFormat;
 private:
     void printForPromptTo(std::ostream &outputStream) const {
         outputStream << "{";
@@ -71,6 +74,10 @@ public:
         matrix = mat;
     }
 
+    Matrix(const Matrix<T>& other) {
+        matrix = other.matrix;
+    }
+
     bool isSquareMatrix() const {
         return getSize().first == getSize().second;
     }
@@ -100,10 +107,11 @@ public:
 
     void printTo(std::ostream &outputStream, PrintFormat format) const {
         switch (format) {
-            case PromptAdjecencyList:
+            using enum PrintFormat;
+            case Prompt:
                 printForPromptTo(outputStream);
                 break;
-            case SolutionAdjecencyList:
+            case Solution:
                 printForSolutionTo(outputStream);
                 break;
         }
@@ -121,7 +129,13 @@ public:
         return Matrix(matrix);
     }
 
-    static Matrix constructIdentityMatrix(uint64_t size);
+    static Matrix constructIdentityMatrix(uint64_t size) {
+        std::vector<std::vector<T>> matrix(size, std::vector<T>(size, 0));
+        for (uint64_t i = 0; i < size; ++i) {
+            matrix[i][i] = 1;
+        }
+        return Matrix(matrix);
+    }
 
     // Function to get the cofactor matrix (minor matrix)
     Matrix getCofactor(uint64_t delRow, uint64_t delCol) const;
@@ -129,6 +143,105 @@ public:
     int64_t getTrace() const;
 
     int64_t getDeterminant() const;
+
+    Matrix<T> operator+(const Matrix<T>& other) const {
+        if (getSize() != other.getSize()) {
+            throw std::invalid_argument("Matrices must have the same dimensions for addition");
+        }
+
+        Matrix<T> result(matrix.size(), matrix[0].size());
+        for (size_t i = 0; i < matrix.size(); ++i) {
+            for (size_t j = 0; j < matrix[i].size(); ++j) {
+                result.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
+            }
+        }
+        return result;
+    }
+
+    Matrix<T> operator*(const Matrix<T>& other) const {
+        if (matrix[0].size() != other.matrix.size()) {
+            throw std::invalid_argument("Matrices must have compatible dimensions for multiplication");
+        }
+
+        std::vector<std::vector<T>> result(matrix.size(), std::vector<T>(other.matrix[0].size(), T()));
+        for (size_t i = 0; i < result.size(); ++i) {
+            for (size_t j = 0; j < result[0].size(); ++j) {
+                for (size_t k = 0; k < matrix[0].size(); ++k) {
+                    result[i][j] += matrix[i][k] * other.matrix[k][j];
+                }
+            }
+        }
+        return Matrix(result);
+    }
+
+    Matrix<T> operator*(const T& scalar) const {
+        Matrix<T> result(matrix.size(), matrix[0].size());
+        for (size_t i = 0; i < matrix.size(); ++i) {
+            for (size_t j = 0; j < matrix[i].size(); ++j) {
+                result.matrix[i][j] = matrix[i][j] * scalar;
+            }
+        }
+        return result;
+    }
+
+
+    Matrix<T> operator-(const Matrix<T>& other) const {
+        if (matrix.size() != other.matrix.size() || matrix[0].size() != other.matrix[0].size()) {
+            throw std::invalid_argument("Matrices must have the same dimensions for subtraction");
+        }
+
+        Matrix<T> result(matrix.size(), matrix[0].size());
+        for (size_t i = 0; i < matrix.size(); ++i) {
+            for (size_t j = 0; j < matrix[i].size(); ++j) {
+                result.matrix[i][j] = matrix[i][j] - other.matrix[i][j];
+            }
+        }
+        return result;
+    }
+
+    Matrix<T> transpose() const {
+        Matrix<T> result(matrix[0].size(), matrix.size());
+        for (size_t i = 0; i < matrix.size(); ++i) {
+            for (size_t j = 0; j < matrix[i].size(); ++j) {
+                result.matrix[j][i] = matrix[i][j];
+            }
+        }
+        return result;
+    }
+
+    Matrix<T> pow(uint64_t x) const {
+        assert(isSquareMatrix());
+        
+        if(x == 0) {
+            return Matrix::constructIdentityMatrix(getSize().first);
+        }
+
+        if (x == 1) {
+            return Matrix(*this);
+        }
+
+        Matrix<T> t = pow(x / 2);
+
+        if(x % 2 == 0) {
+            return t * t;
+        } else {
+            return t * t * Matrix(*this);
+        }
+    }
+
+    Matrix<T>& operator=(Matrix<T>&& other) noexcept {
+        if (this != &other) {
+            matrix = std::move(other.matrix);
+        }
+        return *this;
+    }
+    
+    Matrix<T>& operator=(const Matrix<T>& other) {
+        if (this != &other) {
+            matrix = other.matrix; 
+        }
+        return *this;
+    }
 };
 
 #endif

@@ -8,7 +8,7 @@ template <ConvertibleToInt64_t T>
 class Matrix {
 public:
     std::vector<std::vector<T>> matrix;
-    enum PrintFormat { 
+    enum class PrintFormat { 
         Prompt,
         Solution
     };
@@ -72,6 +72,10 @@ public:
         matrix = mat;
     }
 
+    Matrix(const Matrix<T>& other) {
+        matrix = other.matrix;
+    }
+
     bool isSquareMatrix() const {
         return getSize().first == getSize().second;
     }
@@ -101,10 +105,10 @@ public:
 
     void printTo(std::ostream &outputStream, PrintFormat format) const {
         switch (format) {
-            case PromptAdjecencyList:
+            case Matrix::PrintFormat::Prompt:
                 printForPromptTo(outputStream);
                 break;
-            case SolutionAdjecencyList:
+            case Matrix::PrintFormat::Solution:
                 printForSolutionTo(outputStream);
                 break;
         }
@@ -210,7 +214,7 @@ public:
         }
 
         if (x == 1) {
-            return *this;
+            return Matrix(*this);
         }
 
         Matrix<T> t = pow(x / 2);
@@ -218,8 +222,22 @@ public:
         if(x % 2 == 0) {
             return t * t;
         } else {
-            return t * t * (*this);
+            return t * t * Matrix(*this);
         }
+    }
+
+    Matrix<T>& operator=(Matrix<T>&& other) noexcept {
+        if (this != &other) {
+            matrix = std::move(other.matrix);
+        }
+        return *this;
+    }
+    
+    Matrix<T>& operator=(const Matrix<T>& other) {
+        if (this != &other) {
+            matrix = other.matrix; 
+        }
+        return *this;
     }
 };
 

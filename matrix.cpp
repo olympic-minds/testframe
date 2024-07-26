@@ -17,7 +17,7 @@ Matrix<T> Matrix<T>::getCofactor(uint64_t delRow, uint64_t delCol) const {
         }
     }
 
-    return std::move(temp);
+    return temp;
 }
 
 template <ConvertibleToInt64_t T>

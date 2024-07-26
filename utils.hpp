@@ -6,7 +6,6 @@
 #include <vector>
 #include <iostream>
 
-enum PrintFormat { Prompt, Solution };
 
 // map for keeping the names of directories
 // promptInputDirectory - directory for in files formatted for prompt

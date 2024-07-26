@@ -8,6 +8,11 @@ template <ConvertibleToInt64_t T>
 class Matrix {
 public:
     std::vector<std::vector<T>> matrix;
+    enum PrintFormat { 
+        Prompt,
+        Solution
+    };
+
 private:
     void printForPromptTo(std::ostream &outputStream) const {
         outputStream << "{";
@@ -96,10 +101,10 @@ public:
 
     void printTo(std::ostream &outputStream, PrintFormat format) const {
         switch (format) {
-            case Prompt:
+            case PromptAdjecencyList:
                 printForPromptTo(outputStream);
                 break;
-            case Solution:
+            case SolutionAdjecencyList:
                 printForSolutionTo(outputStream);
                 break;
         }

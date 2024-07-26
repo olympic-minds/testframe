@@ -9,9 +9,15 @@ class Graph {
 public:
     bool directed = false;
     std::vector<std::vector<uint64_t>> graph;
+    enum PrintFormat {
+        PromptAdjecencyList,
+        SolutionAdjecencyList,
+        PromptAdjecencyMatrix,
+        SolutionAdjecencyMatrix
+    };
 
 private:
-    void printForPromptTo(std::ostream &outputStream) const {
+    void printPromptAdjecencyListTo(std::ostream &outputStream) const {
         outputStream << "{";
         for (uint64_t i = 0; i < getNumberOfNodes() ; ++i) {
             outputStream << "{";
@@ -29,7 +35,53 @@ private:
         outputStream << "}\n";
     }
 
-    void printForSolutionTo(std::ostream &outputStream) const {
+    void printPromptAdjecencyMatrixTo(std::ostream &outputStream) const {
+        auto nodes = getNumberOfNodes();
+
+        std::vector<std::vector<int>> matrix(nodes, std::vector<int>(nodes, 0));
+
+        for (auto [from, to] : getEdges()) {
+            matrix[from][to] = 1;
+        }
+        
+        outputStream << "{";
+        for (uint64_t i = 0; i < nodes ; ++i) {
+            outputStream << "{";
+            for (uint64_t j = 0; j < nodes; ++j) {
+                outputStream << matrix[i][j];
+                if (j != graph[i].size() - 1) {
+                    outputStream << ",";
+                }
+            }
+            outputStream << "}";
+            if (i != nodes  - 1) {
+                outputStream << ",";
+            }
+        }
+        outputStream << "}\n";
+    }
+
+    void printSolutionAdjecencyMatrixTo(std::ostream &outputStream) const {
+        uint64_t nodes = getNumberOfNodes();
+        outputStream << nodes  << "\n";
+        
+        std::vector<std::vector<int>> matrix(nodes, std::vector<int>(nodes, 0));
+        for (auto [from, to] : getEdges()) {
+            matrix[from][to] = 1;
+        }
+
+        for (uint64_t i = 0; i < nodes ; ++i) {
+            for (uint64_t j = 0; j < nodes; ++j) {
+                outputStream << matrix[i][j];
+                if (j != graph[i].size() - 1) {
+                    outputStream << " ";
+                }
+            }
+            outputStream << "\n";
+        }
+    }
+
+    void printSolutionAdjecencyListTo(std::ostream &outputStream) const {
         auto edges = getEdges();
 
         outputStream << getNumberOfNodes()  << " " << edges.size() << "\n";
@@ -77,11 +129,17 @@ public:
 
     void printTo(std::ostream &outputStream, PrintFormat format) const {
         switch (format) {
-            case Prompt:
-                printForPromptTo(outputStream);
+            case PromptAdjecencyList:
+                printPromptAdjecencyListTo(outputStream);
                 break;
-            case Solution:
-                printForSolutionTo(outputStream);
+            case SolutionAdjecencyList:
+                printSolutionAdjecencyListTo(outputStream);
+                break;
+            case PromptAdjecencyMatrix:
+                printPromptAdjecencyListTo(outputStream);
+                break;
+            case SolutionAdjecencyMatrix:
+                printSolutionAdjecencyListTo(outputStream);
                 break;
         }
     }

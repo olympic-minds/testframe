@@ -4,15 +4,17 @@
 #include "utils.hpp"
 #include <cassert>
 
+enum class MatrixPrintFormat { 
+    Prompt,
+    Solution
+};
+
 template <ConvertibleToInt64_t T>
 class Matrix {
 public:
     std::vector<std::vector<T>> matrix;
-    enum class PrintFormat { 
-        Prompt,
-        Solution
-    };
 
+    using PrintFormat = MatrixPrintFormat;
 private:
     void printForPromptTo(std::ostream &outputStream) const {
         outputStream << "{";
@@ -105,10 +107,11 @@ public:
 
     void printTo(std::ostream &outputStream, PrintFormat format) const {
         switch (format) {
-            case Matrix::PrintFormat::Prompt:
+            using enum PrintFormat;
+            case Prompt:
                 printForPromptTo(outputStream);
                 break;
-            case Matrix::PrintFormat::Solution:
+            case Solution:
                 printForSolutionTo(outputStream);
                 break;
         }

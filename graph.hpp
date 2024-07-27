@@ -103,9 +103,9 @@ public:
         }); 
     }
 
-    vector<vector<uint64_t>> getAdjecencyMatrix() const {
+    std::vector<std::vector<uint64_t>> getAdjecencyMatrix() const {
         int n = getNumberOfNodes();
-        vector<vector<uint64_t>> adjMatrix(n, vector<uint64_t>(n, 0));
+        std::vector<std::vector<uint64_t>> adjMatrix(n, std::vector<uint64_t>(n, 0));
 
         for (int i = 0; i < n; ++i) {
             for (int j : graph[i]) {

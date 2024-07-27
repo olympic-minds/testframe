@@ -103,6 +103,19 @@ public:
         }); 
     }
 
+    std::vector<std::vector<uint64_t>> getAdjecencyMatrix() const {
+        int n = getNumberOfNodes();
+        std::vector<std::vector<uint64_t>> adjMatrix(n, std::vector<uint64_t>(n, 0));
+
+        for (int i = 0; i < n; ++i) {
+            for (int j : graph[i]) {
+                adjMatrix[i][j] = 1;
+            }
+        }
+
+        return adjMatrix;
+    }
+
     bool operator==(const Graph &other) const {
         if (getNumberOfNodes()  != other.getNumberOfNodes() ) {
             return false;

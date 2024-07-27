@@ -9,7 +9,7 @@ class Graph {
 public:
     bool directed = false;
     std::vector<std::vector<uint64_t>> graph;
-    enum PrintFormat {
+    enum class PrintFormat {
         PromptAdjecencyList,
         SolutionAdjecencyList,
         PromptAdjecencyMatrix,
@@ -129,16 +129,16 @@ public:
 
     void printTo(std::ostream &outputStream, PrintFormat format) const {
         switch (format) {
-            case PromptAdjecencyList:
+            case PrintFormat::PromptAdjecencyList:
                 printPromptAdjecencyListTo(outputStream);
                 break;
-            case SolutionAdjecencyList:
+            case PrintFormat::SolutionAdjecencyList:
                 printSolutionAdjecencyListTo(outputStream);
                 break;
-            case PromptAdjecencyMatrix:
+            case PrintFormat::PromptAdjecencyMatrix:
                 printPromptAdjecencyListTo(outputStream);
                 break;
-            case SolutionAdjecencyMatrix:
+            case PrintFormat::SolutionAdjecencyMatrix:
                 printSolutionAdjecencyListTo(outputStream);
                 break;
         }

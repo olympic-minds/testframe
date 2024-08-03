@@ -3,15 +3,18 @@
 #include "rand.hpp"
 
 
+Random rndm{};
+
+
 using IntType = Random::IntType;
 
-IntType Random::intFromRange(IntType a, IntType b) {
+IntType Random::intFromRange(IntType a, IntType b) noexcept(false) {
     assert(a < b);
     std::uniform_int_distribution<IntType> dist(a, b - 1);
     return dist(engine);
 }
 
-std::vector<IntType> Random::intsFromRange(std::size_t n, IntType a, IntType b) {
+std::vector<IntType> Random::intsFromRange(std::size_t n, IntType a, IntType b) noexcept(false) {
     assert(a < b);
     std::vector<IntType> ret(n);
     std::uniform_int_distribution<IntType> dist(a, b - 1);
@@ -21,13 +24,13 @@ std::vector<IntType> Random::intsFromRange(std::size_t n, IntType a, IntType b) 
     return ret;
 }
 
-double Random::doubleFromRange(double a, double b) {
+double Random::doubleFromRange(double a, double b) noexcept(false) {
     assert(std::isfinite(a) && std::isfinite(b) && a < b);
     std::uniform_real_distribution dist(a, b);
     return dist(engine);
 }
 
-std::vector<double> Random::doublesFromRange(std::size_t n, double a, double b) {
+std::vector<double> Random::doublesFromRange(std::size_t n, double a, double b) noexcept(false) {
     assert(std::isfinite(a) && std::isfinite(b) && a < b);
     std::vector<double> ret(n);
     std::uniform_real_distribution dist(a, b);
@@ -44,7 +47,8 @@ std::vector<IntType> Random::perm(std::size_t n, IntType a) noexcept {
     return ret;
 }
 
-std::vector<IntType> Random::distinct(std::size_t n, IntType a, IntType b) noexcept {
+std::vector<IntType> Random::distinct(std::size_t n, IntType a, IntType b) noexcept(false) {
+    assert(a < b);
     std::vector<IntType> ret;
     ret.reserve(n);
 
@@ -55,8 +59,8 @@ std::vector<IntType> Random::distinct(std::size_t n, IntType a, IntType b) noexc
     return ret;
 }
 
-std::vector<IntType> Random::partition(std::size_t n, IntType sum, IntType min) noexcept {
-    assert(sum >= n * min);
+std::vector<IntType> Random::partition(std::size_t n, IntType sum, IntType min) noexcept(false) {
+    assert(sum >= n * min && sum >= 0 && min >= 0);
     IntType adjusted_sum = sum - n * min;
 
     std::vector<IntType> points = intsFromRange(n-1, adjusted_sum);
@@ -71,4 +75,21 @@ std::vector<IntType> Random::partition(std::size_t n, IntType sum, IntType min) 
     }
 
     return shuffle(partitions);
+}
+
+[[nodiscard]] inline double Random::betaDist(double alpha, double beta) noexcept(false) {
+    assert(std::isfinite(alpha) && std::isfinite(beta));
+    std::gamma_distribution<double> gamma_alpha(alpha, 1.0);
+    std::gamma_distribution<double> gamma_beta(beta, 1.0);
+
+    double x_alpha = gamma_alpha(engine);
+    double x_beta = gamma_beta(engine);
+    return x_alpha / (x_alpha + x_beta);
+}
+
+[[nodiscard]] IntType Random::wnext(IntType b, std::int64_t type) noexcept(false) {
+    if (type > 0)
+        return static_cast<IntType>(b * betaDist(type + 1.0, 1.0));
+    else
+        return static_cast<IntType>(b * betaDist(1.0, -type + 1.0)); 
 }

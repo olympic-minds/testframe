@@ -15,6 +15,7 @@ struct [[nodiscard]] Random {
 public:
     // using IntType = std::uint64_t;
     using IntType = std::int64_t;    // signed?
+    static struct random_seed_t {} random_seed;
 
     IntType seed{};    
     std::mt19937_64 engine{};
@@ -22,6 +23,10 @@ public:
 public:
     explicit Random(IntType seed = 137) noexcept
         : seed(seed), engine(seed)
+    {}
+
+    explicit Random(random_seed_t) noexcept
+        : seed(std::random_device{}()), engine(seed)
     {}
 
 public:

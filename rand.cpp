@@ -60,7 +60,13 @@ std::vector<IntType> Random::distinct(std::size_t n, IntType a, IntType b) noexc
 }
 
 std::vector<IntType> Random::partition(std::size_t n, IntType sum, IntType min) noexcept(false) {
-    assert(sum >= n * min && sum >= 0 && min >= 0);
+    if constexpr(std::is_signed_v<IntType>) {
+        #pragma GCC diagnostic push
+        #pragma GCC diagnostic ignored "-Wtype-limits"
+        assert(sum >= 0 && min >= 0);
+        #pragma GCC diagnostic pop
+    }
+    assert(sum >= static_cast<Random::IntType>(n * min));
     IntType adjusted_sum = sum - n * min;
 
     std::vector<IntType> points = intsFromRange(n-1, adjusted_sum);
@@ -88,6 +94,7 @@ std::vector<IntType> Random::partition(std::size_t n, IntType sum, IntType min) 
 }
 
 [[nodiscard]] IntType Random::wnext(IntType b, std::int64_t type) noexcept(false) {
+    assert(b > 0);
     if (type > 0)
         return static_cast<IntType>(b * betaDist(type + 1.0, 1.0));
     else

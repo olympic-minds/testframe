@@ -18,9 +18,9 @@ public:
 private:
     void printForPromptTo(std::ostream &outputStream) const {
         outputStream << "{";
-        for (uint64_t i = 0; i < getSize().first; ++i) {
+        for (std::uint64_t i = 0; i < getSize().first; ++i) {
             outputStream << "{";
-            for (uint64_t j = 0; j < getSize().second; ++j) {
+            for (std::uint64_t j = 0; j < getSize().second; ++j) {
                 outputStream << matrix[i][j];
                 if (j != getSize().second - 1) {
                     outputStream << ",";
@@ -36,8 +36,8 @@ private:
 
     void printForSolutionTo(std::ostream &outputStream) const {
         outputStream << getSize().first << " " << getSize().second << "\n";
-        for (uint64_t i = 0; i < getSize().first; ++i) {
-            for (uint64_t j = 0; j < getSize().second; ++j) {
+        for (std::uint64_t i = 0; i < getSize().first; ++i) {
+            for (std::uint64_t j = 0; j < getSize().second; ++j) {
                 outputStream << matrix[i][j];
                 if (j != getSize().second - 1) {
                     outputStream << " ";
@@ -53,7 +53,7 @@ private:
             return false;
         }
 
-        uint64_t rowLength = mat[0].size();
+        std::uint64_t rowLength = mat[0].size();
         if (rowLength == 0) {
             return false;
         }
@@ -84,7 +84,7 @@ public:
 
     /// Returns the size of the matrix, first is number of rows, second is number of columns.
     /// Matrices with zero rows or columns are not allowed by the constructor, therefore we don't check if matrix[0] exists.
-    std::pair<uint64_t, uint64_t> getSize() const { 
+    std::pair<std::uint64_t, std::uint64_t> getSize() const { 
         return {matrix.size(), matrix[0].size()};
     }
 
@@ -93,8 +93,8 @@ public:
             return false;
         }
 
-        for (uint64_t i = 0; i < getSize().first; ++i) {
-            for (uint64_t j = 0; j < getSize().second; ++j) {
+        for (std::uint64_t i = 0; i < getSize().first; ++i) {
+            for (std::uint64_t j = 0; j < getSize().second; ++j) {
                 if (matrix[i][j] != other.matrix[i][j]) {
                     return false;
                 }
@@ -118,31 +118,31 @@ public:
     }
 
     static Matrix readMatrix(std::istream &inputStream) {
-        std::pair<uint64_t, uint64_t> size;
+        std::pair<std::uint64_t, std::uint64_t> size;
         inputStream >> size.first >> size.second;
         std::vector<std::vector<T>> matrix(size.first, std::vector<T>(size.second));
-        for (uint64_t i = 0; i < size.first; ++i) {
-            for (uint64_t j = 0; j < size.second; ++j) {
+        for (std::uint64_t i = 0; i < size.first; ++i) {
+            for (std::uint64_t j = 0; j < size.second; ++j) {
                 inputStream >> matrix[i][j];
             }
         }
         return Matrix(matrix);
     }
 
-    static Matrix constructIdentityMatrix(uint64_t size) {
+    static Matrix constructIdentityMatrix(std::uint64_t size) {
         std::vector<std::vector<T>> matrix(size, std::vector<T>(size, 0));
-        for (uint64_t i = 0; i < size; ++i) {
+        for (std::uint64_t i = 0; i < size; ++i) {
             matrix[i][i] = 1;
         }
         return Matrix(matrix);
     }
 
     // Function to get the cofactor matrix (minor matrix)
-    Matrix getCofactor(uint64_t delRow, uint64_t delCol) const;
+    Matrix getCofactor(std::uint64_t delRow, std::uint64_t delCol) const;
 
-    int64_t getTrace() const;
+    std::int64_t getTrace() const;
 
-    int64_t getDeterminant() const;
+    std::int64_t getDeterminant() const;
 
     Matrix<T> operator+(const Matrix<T>& other) const {
         if (getSize() != other.getSize()) {
@@ -209,7 +209,7 @@ public:
         return result;
     }
 
-    Matrix<T> pow(uint64_t x) const {
+    Matrix<T> pow(std::uint64_t x) const {
         assert(isSquareMatrix());
         
         if(x == 0) {

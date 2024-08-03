@@ -7,12 +7,14 @@
 #include <cstdint>
 #include <algorithm>
 #include <cassert>
+#include <iterator>
+#include <ranges>
 
 
 struct [[nodiscard]] Random {
 public:
-    using IntType = std::uint64_t;
-    // using IntType = std::int64_t;    // signed?
+    // using IntType = std::uint64_t;
+    using IntType = std::int64_t;    // signed?
 
     IntType seed{};    
     std::mt19937_64 engine{};
@@ -63,13 +65,15 @@ public:
     [[nodiscard]] std::vector<IntType> perm(std::size_t n, IntType a = 0) noexcept;
 
     // shuffle a range
-    template<class RandomIt>
-    inline void shuffle(RandomIt first, RandomIt last) noexcept(false) {
+    template<std::random_access_iterator I, std::sentinel_for<I> S>
+    requires std::permutable<I>
+    inline void shuffle(I first, S last) noexcept(false) {
         std::shuffle(first, last, engine);
     }
     // shuffle a range
-    template<class R>
-    [[nodiscard]] inline R shuffle(R&& range) noexcept(false) {
+    template<std::ranges::random_access_range R>
+    requires std::permutable<std::ranges::iterator_t<R>>
+    inline auto& shuffle(R&& range) noexcept(false) {
         std::shuffle(std::begin(range), std::end(range), engine);
         return range;
     }

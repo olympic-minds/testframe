@@ -42,15 +42,9 @@ template <typename T>
 concept ConvertibleToInt64_t = std::convertible_to<T, std::int64_t>;
 
 template<ConvertibleToInt64_t T>
-<<<<<<< HEAD
 std::int64_t changeVectorToInt64_t(std::vector<T> &v) {
     std::int64_t result = 0;
-    for (std::int64_t i = 0; i < v.size(); i++) {
-=======
-int64_t changeVectorToInt64_t(std::vector<T> &v) {
-    int64_t result = 0;
-    for (int64_t i = 0; i < (int64_t)v.size(); i++) {
->>>>>>> 2503e4cad1e4f7b04552db5eea96e5c9194d9dd5
+    for (std::int64_t i = 0; i < static_cast<std::int64_t>(v.size()); ++i) {
         result += (i + 1) * v[i];
     }
     return result;
@@ -58,17 +52,10 @@ int64_t changeVectorToInt64_t(std::vector<T> &v) {
 
 
 template<ConvertibleToInt64_t T>
-<<<<<<< HEAD
 std::int64_t changeVectorOfPairsToInt64_t(std::vector<std::pair<T, T>> &v) {
     std::int64_t result = 0;
-    for (std::int64_t i = 0; i < v.size(); i++) {
+    for (std::int64_t i = 0; i < static_cast<std::int64_t>(v.size()); ++i) {
         result += (2*i + 1) * v[i].first + (2*i + 2) * v[i].second;
-=======
-int64_t changeVectorOfPairsToInt64_t(std::vector<std::pair<T, T>> &v) {
-    int64_t result = 0;
-    for (int64_t i = 0; i < (int64_t)v.size(); i++) {
-        result += (2 * i + 1) * v[i].first + (2 * i + 2) * v[i].second;
->>>>>>> 2503e4cad1e4f7b04552db5eea96e5c9194d9dd5
     }
     return result;
 }

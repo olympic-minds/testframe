@@ -239,6 +239,7 @@ Graph Graph::constructTreeOfBoundedDegreeGraph(uint64_t nodes, uint64_t minDegre
             availableLeaves.pop_front();
             inTree.push(nextNode);
             g[currentNode].push_back(nextNode);
+            g[nextNode].push_back(currentNode);
         }
     }
     return Graph(g).relabelNodes();

@@ -3,7 +3,7 @@
 #include "rand.hpp"
 
 
-Random rndm{};
+Random rnd{};
 
 
 using IntType = Random::IntType;

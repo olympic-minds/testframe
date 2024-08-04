@@ -6,7 +6,7 @@
 #include <cmath>
 
 Graph& Graph::relabelNodes() {
-    auto perm = rndm.perm(getNumberOfNodes());
+    auto perm = rnd.perm(getNumberOfNodes());
     std::vector<std::uint64_t> inv_perm(getNumberOfNodes());
     for (std::uint64_t i = 0; i < getNumberOfNodes(); i++) {
         inv_perm[perm[i]] = i;
@@ -68,7 +68,7 @@ Graph Graph::constructUndirectedClique(std::uint64_t nodes) {
 
 Graph Graph::constructPathGraph(std::uint64_t nodes, std::uint64_t numberOfComponents) {
     std::vector<std::vector<std::uint64_t>> g(nodes);
-    std::vector part = rndm.partition(numberOfComponents, nodes);
+    std::vector part = rnd.partition(numberOfComponents, nodes);
     std::uint64_t current = 0;
     for (std::uint64_t l = 0; l < part.size(); ++l) {
         std::uint64_t length = part[l];
@@ -85,7 +85,7 @@ Graph Graph::constructPathGraph(std::uint64_t nodes, std::uint64_t numberOfCompo
 Graph Graph::constructShallowForestGraph(std::uint64_t nodes, std::uint64_t numberOfTrees) {
     std::vector<std::vector<std::uint64_t>> g;
     g.resize(nodes);
-    std::vector pa = rndm.partition(numberOfTrees, nodes);
+    std::vector pa = rnd.partition(numberOfTrees, nodes);
     std::uint64_t root = 0, sum = 0, pnt = 0;
     for (std::uint64_t i = 0; i < nodes; i++) {
         if (i == sum) {
@@ -93,7 +93,7 @@ Graph Graph::constructShallowForestGraph(std::uint64_t nodes, std::uint64_t numb
             sum += pa[pnt++];
             continue;
         }
-        std::uint64_t neighbor = rndm.intFromRange(root, i - 1);
+        std::uint64_t neighbor = rnd.intFromRange(root, i - 1);
         g[neighbor].push_back(i);
         g[i].push_back(neighbor);
     }
@@ -107,7 +107,7 @@ Graph Graph::constructShallowTreeGraph(std::uint64_t nodes) {
 Graph Graph::constructForestGraph(std::uint64_t nodes, std::uint64_t numberOfTrees) {
     std::vector<std::vector<std::uint64_t>> g;
     g.resize(nodes);
-    std::vector pa = rndm.partition(numberOfTrees, nodes);
+    std::vector pa = rnd.partition(numberOfTrees, nodes);
     std::uint64_t root = 0;
     for (auto currentNodes : pa) {
         std::vector<std::uint64_t> prufer, cnt(currentNodes, 0);
@@ -123,7 +123,7 @@ Graph Graph::constructForestGraph(std::uint64_t nodes, std::uint64_t numberOfTre
             continue;
         }
         for (Random::IntType i = 0; i < currentNodes - 2; i++) {
-            std::uint64_t x = rndm.intFromRange(currentNodes);
+            std::uint64_t x = rnd.intFromRange(currentNodes);
             prufer.push_back(x);
             ++cnt[x];
         }
@@ -178,7 +178,7 @@ Graph Graph::constructSimplerJellyfishGraph(std::uint64_t nodes, std::uint64_t c
                                             std::uint64_t numberOfTentacles) {
     std::vector<std::vector<std::uint64_t>> g;
     g.resize(nodes);
-    std::vector pa = rndm.partition(numberOfTentacles, nodes - cycleSize, minTentacleLength);
+    std::vector pa = rnd.partition(numberOfTentacles, nodes - cycleSize, minTentacleLength);
     std::uint64_t next = 1;
     std::uint64_t prev = 0;
     for (std::uint64_t i = 0; i < cycleSize - 1; i++) {
@@ -190,7 +190,7 @@ Graph Graph::constructSimplerJellyfishGraph(std::uint64_t nodes, std::uint64_t c
     g[prev].push_back(0);
     g[0].push_back(prev);
     for (std::uint64_t raySize : pa) {
-        prev = rndm.intFromRange(cycleSize);  // Ray starts at node in [0, cycyleSize - 1]
+        prev = rnd.intFromRange(cycleSize);  // Ray starts at node in [0, cycyleSize - 1]
         for (std::uint64_t i = 0; i < raySize; i++) {
             g[prev].push_back(next);
             g[next].push_back(prev);
@@ -234,7 +234,7 @@ Graph Graph::constructTreeOfBoundedDegreeGraph(std::uint64_t nodes, std::uint64_
     while (!availableLeaves.empty() && !inTree.empty()) {
         std::uint64_t currentNode = inTree.front();
         inTree.pop();
-        std::uint64_t degree = rndm.intFromRange(std::min(minDegree, (std::uint64_t)availableLeaves.size()),
+        std::uint64_t degree = rnd.intFromRange(std::min(minDegree, (std::uint64_t)availableLeaves.size()),
                                    std::min(maxDegree, (std::uint64_t)availableLeaves.size()));
         while (degree--) {
             std::uint64_t nextNode = availableLeaves.front();
@@ -248,10 +248,10 @@ Graph Graph::constructTreeOfBoundedDegreeGraph(std::uint64_t nodes, std::uint64_
 }
 
 Graph Graph::constructSparseGraph(std::uint64_t nodes) {
-    std::uint64_t number_of_edges = rndm.wnext(nodes * static_cast<std::uint64_t>(std::sqrt(nodes)) / 2, -1);
+    std::uint64_t number_of_edges = rnd.wnext(nodes * static_cast<std::uint64_t>(std::sqrt(nodes)) / 2, -1);
     std::set<std::pair<int, int>> edges;
     while ((std::uint64_t)edges.size() < number_of_edges) {
-        auto vert = rndm.distinct(2, nodes);
+        auto vert = rnd.distinct(2, nodes);
         std::uint64_t a = vert[0], b = vert[1];
         if (a > b) {
             std::swap(a, b);
@@ -275,8 +275,8 @@ Graph Graph::constructDenseGraph(std::uint64_t nodes) {
         }
     }
 
-    rndm.shuffle(all_edges);
-    std::uint64_t number_of_edges = rndm.wnext(
+    rnd.shuffle(all_edges);
+    std::uint64_t number_of_edges = rnd.wnext(
         nodes * static_cast<std::uint64_t>(std::sqrt(nodes)) / 2,
         nodes * (nodes - 1) / 2,
         1

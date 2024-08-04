@@ -111,7 +111,7 @@ public:
     [[nodiscard]] IntType wnext(IntType b, std::int64_t type) noexcept(false);
 };
 
-extern Random rndm;
+extern Random rnd;
 
 
 #endif // OLYMPIC_MINDS_TESTFRAME_RAND_HPP

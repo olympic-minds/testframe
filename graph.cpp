@@ -28,7 +28,9 @@ uint64_t Graph::undirectedConnectedComponentsNumber() {
     std::function<void(uint64_t)> dfs = [&](uint64_t v) -> void {
         visited[v] = true;
         for (auto u : graph[v]) {
-            dfs(u);
+            if (!visited[v]) {
+                dfs(u);
+            }
         }
     };
 

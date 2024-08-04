@@ -49,6 +49,7 @@ std::vector<IntType> Random::perm(std::size_t n, IntType a) noexcept {
 
 std::vector<IntType> Random::distinct(std::size_t n, IntType a, IntType b) noexcept(false) {
     assert(a <= static_cast<std::size_t>(b));
+    assert(n <= static_cast<std::size_t>(b - a + 1));
     
     std::vector<IntType> ret;
     ret.reserve(n);

@@ -2,6 +2,7 @@
 #define GEN_UTILS_H_
 
 #include <fstream>
+#include <cstdint>
 
 /**
  * @brief Returns 2 streams: for prompt input files and for solution input files.

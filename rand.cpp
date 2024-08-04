@@ -9,15 +9,15 @@ Random rndm{};
 using IntType = Random::IntType;
 
 IntType Random::intFromRange(IntType a, IntType b) noexcept(false) {
-    assert(a < b);
-    std::uniform_int_distribution<IntType> dist(a, b - 1);
+    assert(a <= b);
+    std::uniform_int_distribution<IntType> dist(a, b);
     return dist(engine);
 }
 
 std::vector<IntType> Random::intsFromRange(std::size_t n, IntType a, IntType b) noexcept(false) {
-    assert(a < b);
+    assert(a <= b);
     std::vector<IntType> ret(n);
-    std::uniform_int_distribution<IntType> dist(a, b - 1);
+    std::uniform_int_distribution<IntType> dist(a, b);
     while(n--) {
         ret[n] = dist(engine);
     }
@@ -48,11 +48,12 @@ std::vector<IntType> Random::perm(std::size_t n, IntType a) noexcept {
 }
 
 std::vector<IntType> Random::distinct(std::size_t n, IntType a, IntType b) noexcept(false) {
-    assert(a < b);
+    assert(a <= static_cast<std::size_t>(b));
+    
     std::vector<IntType> ret;
     ret.reserve(n);
 
-    std::vector<IntType> range(b - a);
+    std::vector<IntType> range(b - a + 1);
     std::iota(std::begin(range), std::end(range), a);
     std::ranges::sample(range, std::back_inserter(ret), n, engine);
 

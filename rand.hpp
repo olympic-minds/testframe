@@ -13,8 +13,7 @@
 
 struct [[nodiscard]] Random {
 public:
-    // using IntType = std::uint64_t;
-    using IntType = std::int64_t;    // signed?
+    using IntType = std::int64_t;
     static struct random_seed_t {} random_seed;
 
     IntType seed{};    
@@ -30,16 +29,16 @@ public:
     {}
 
 public:
-    // one uniform IntType from interval [a, b)
+    // one uniform IntType from interval [a, b]
     [[nodiscard]] IntType intFromRange(IntType a, IntType b) noexcept(false);
-    // one uniform IntType from interval [0, b)
+    // one uniform IntType from interval [0, b]
     [[nodiscard]] inline IntType intFromRange(IntType b) noexcept(false) {
         return intFromRange(0, b);
     }
 
-    // n uniform ints from interval [a, b)
+    // n uniform ints from interval [a, b]
     [[nodiscard]] std::vector<IntType> intsFromRange(std::size_t n, IntType a, IntType b) noexcept(false);
-    // n uniform ints from interval [0, b)
+    // n uniform ints from interval [0, b]
     [[nodiscard]] inline std::vector<IntType> intsFromRange(std::size_t n, IntType b) noexcept(false) {
         return intsFromRange(n, 0, b);
     }
@@ -83,14 +82,14 @@ public:
         return range;
     }
 
-    // selects min(n, b-a) distinct numbers from [a, b); stable
+    // selects min(n, b-a) distinct numbers from [a, b]; stable
     [[nodiscard]] std::vector<IntType> distinct(std::size_t n, IntType a, IntType b) noexcept(false);
-    // selects min(n, b) distinct numbers from [0, b); stable
+    // selects min(n, b) distinct numbers from [0, b]; stable
     [[nodiscard]] inline std::vector<IntType> distinct(std::size_t n, IntType b) noexcept(false) {
         return distinct(n, IntType{0}, b);
     }
 
-    // splits sum into n parts such that each of them is at least min
+    // returns a vector of `n` integers such that their sum is equal to `sum` and each of them is at least `min`
     [[nodiscard]] std::vector<IntType> partition(std::size_t n, IntType sum, IntType min = 1)  noexcept(false);
 
     // gets a double from beta distribution with parameters alpha and beta
@@ -109,7 +108,7 @@ public:
     // type = 0 -> uniform distribution
     // type > 0 -> max of type+1 values from uniform distributions
     // type < 0 -> min of -type-1 values from uniform distributions
-    [[nodiscard]] IntType wnext(IntType b, int64_t type) noexcept(false);
+    [[nodiscard]] IntType wnext(IntType b, std::int64_t type) noexcept(false);
 };
 
 extern Random rndm;

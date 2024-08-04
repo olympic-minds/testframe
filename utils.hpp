@@ -44,7 +44,7 @@ concept ConvertibleToInt64_t = std::convertible_to<T, int64_t>;
 template<ConvertibleToInt64_t T>
 int64_t changeVectorToInt64_t(std::vector<T> &v) {
     int64_t result = 0;
-    for (int64_t i = 0; i < v.size(); i++) {
+    for (int64_t i = 0; i < (int64_t)v.size(); i++) {
         result += (i + 1) * v[i];
     }
     return result;
@@ -54,8 +54,8 @@ int64_t changeVectorToInt64_t(std::vector<T> &v) {
 template<ConvertibleToInt64_t T>
 int64_t changeVectorOfPairsToInt64_t(std::vector<std::pair<T, T>> &v) {
     int64_t result = 0;
-    for (int64_t i = 0; i < v.size(); i++) {
-        result += (2*i + 1) * v[i].first + (2*i + 2) * v[i].second;
+    for (int64_t i = 0; i < (int64_t)v.size(); i++) {
+        result += (2 * i + 1) * v[i].first + (2 * i + 2) * v[i].second;
     }
     return result;
 }

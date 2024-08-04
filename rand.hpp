@@ -50,7 +50,7 @@ public:
         return doubleFromRange(0., b);
     }
     // one uniform double from interval [0.0, 1.0)
-    [[nodiscard]] inline double doubleFrom01() noexcept {
+    [[nodiscard]] inline double doubleBetween01() noexcept {
         return doubleFromRange(0., 1.);
     }
 
@@ -61,7 +61,7 @@ public:
         return doublesFromRange(n, 0.0, b);
     }
     // `n` uniform doubles from interval [0.0, 1.0)
-    [[nodiscard]] inline std::vector<double> doublesFrom01(std::size_t n) noexcept {
+    [[nodiscard]] inline std::vector<double> doublesBetween01(std::size_t n) noexcept {
         return doublesFromRange(n, 0.0, 1.0);
     }
 
@@ -82,9 +82,9 @@ public:
         return range;
     }
 
-    // selects `n` distinct numbers from [a, b]; stable
+    // selects `n` distinct numbers from [a, b]
     [[nodiscard]] std::vector<IntType> distinct(std::size_t n, IntType a, IntType b) noexcept(false);
-    // selects `n` distinct numbers from [0, b]; stable
+    // selects `n` distinct numbers from [0, b]
     [[nodiscard]] inline std::vector<IntType> distinct(std::size_t n, IntType b) noexcept(false) {
         return distinct(n, IntType{0}, b);
     }

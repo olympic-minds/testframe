@@ -93,7 +93,7 @@ Graph Graph::constructShallowForestGraph(std::uint64_t nodes, std::uint64_t numb
             sum += pa[pnt++];
             continue;
         }
-        std::uint64_t neighbor = rnd.intFromRange(root, i - 1);
+        std::uint64_t neighbor = rnd.intFromRange(root, i);
         g[neighbor].push_back(i);
         g[i].push_back(neighbor);
     }
@@ -123,7 +123,7 @@ Graph Graph::constructForestGraph(std::uint64_t nodes, std::uint64_t numberOfTre
             continue;
         }
         for (Random::IntType i = 0; i < currentNodes - 2; i++) {
-            std::uint64_t x = rnd.intFromRange(currentNodes);
+            std::uint64_t x = rnd.intFromRange(currentNodes - 1);
             prufer.push_back(x);
             ++cnt[x];
         }
@@ -190,7 +190,7 @@ Graph Graph::constructSimplerJellyfishGraph(std::uint64_t nodes, std::uint64_t c
     g[prev].push_back(0);
     g[0].push_back(prev);
     for (std::uint64_t raySize : pa) {
-        prev = rnd.intFromRange(cycleSize);  // Ray starts at node in [0, cycyleSize - 1]
+        prev = rnd.intFromRange(cycleSize - 1);  // Ray starts at node in [0, cycyleSize - 1]
         for (std::uint64_t i = 0; i < raySize; i++) {
             g[prev].push_back(next);
             g[next].push_back(prev);
@@ -234,7 +234,7 @@ Graph Graph::constructTreeOfBoundedDegreeGraph(std::uint64_t nodes, std::uint64_
     while (!availableLeaves.empty() && !inTree.empty()) {
         std::uint64_t currentNode = inTree.front();
         inTree.pop();
-        std::uint64_t degree = rnd.intFromRange(std::min(minDegree, (std::uint64_t)availableLeaves.size()),
+        std::uint64_t degree = rnd.intFromRange(std::min(minDegree, availableLeaves.size() - 1),
                                    std::min(maxDegree, (std::uint64_t)availableLeaves.size()));
         while (degree--) {
             std::uint64_t nextNode = availableLeaves.front();
@@ -248,7 +248,7 @@ Graph Graph::constructTreeOfBoundedDegreeGraph(std::uint64_t nodes, std::uint64_
 }
 
 Graph Graph::constructSparseGraph(std::uint64_t nodes) {
-    std::uint64_t number_of_edges = rnd.wnext(nodes * static_cast<std::uint64_t>(std::sqrt(nodes)) / 2, -1);
+    std::uint64_t number_of_edges = rnd.weightedNumFromRange(nodes * static_cast<std::uint64_t>(std::sqrt(nodes)) / 2, -1);
     std::set<std::pair<int, int>> edges;
     while ((std::uint64_t)edges.size() < number_of_edges) {
         auto vert = rnd.distinct(2, nodes);
@@ -276,7 +276,7 @@ Graph Graph::constructDenseGraph(std::uint64_t nodes) {
     }
 
     rnd.shuffle(all_edges);
-    std::uint64_t number_of_edges = rnd.wnext(
+    std::uint64_t number_of_edges = rnd.weightedNumFromRange(
         nodes * static_cast<std::uint64_t>(std::sqrt(nodes)) / 2,
         nodes * (nodes - 1) / 2,
         1

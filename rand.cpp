@@ -71,7 +71,7 @@ std::vector<IntType> Random::partition(std::size_t n, IntType sum, IntType min) 
     assert(sum >= static_cast<Random::IntType>(n * min));
     IntType adjusted_sum = sum - n * min;
 
-    std::vector<IntType> points = intsFromRange(n-1, adjusted_sum);
+    std::vector<IntType> points = intsFromRange(n - 1, adjusted_sum - 1);
     points.emplace_back(IntType{0});
     points.emplace_back(adjusted_sum);
     
@@ -95,7 +95,7 @@ std::vector<IntType> Random::partition(std::size_t n, IntType sum, IntType min) 
     return x_alpha / (x_alpha + x_beta);
 }
 
-[[nodiscard]] IntType Random::wnext(IntType b, std::int64_t type) noexcept(false) {
+[[nodiscard]] IntType Random::weightedNumFromRange(IntType b, std::int64_t type) noexcept(false) {
     assert(b > 0);
     if (type > 0)
         return static_cast<IntType>(b * betaDist(type + 1.0, 1.0));

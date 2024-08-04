@@ -28,7 +28,9 @@ uint64_t Graph::undirectedConnectedComponentsNumber() {
     std::function<void(uint64_t)> dfs = [&](uint64_t v) -> void {
         visited[v] = true;
         for (auto u : graph[v]) {
-            dfs(u);
+            if (!visited[v]) {
+                dfs(u);
+            }
         }
     };
 
@@ -239,6 +241,7 @@ Graph Graph::constructTreeOfBoundedDegreeGraph(uint64_t nodes, uint64_t minDegre
             availableLeaves.pop_front();
             inTree.push(nextNode);
             g[currentNode].push_back(nextNode);
+            g[nextNode].push_back(currentNode);
         }
     }
     return Graph(g).relabelNodes();

@@ -29,6 +29,10 @@ public:
     {}
 
 public:
+    inline void setSeed(IntType seed) {
+        engine.seed(seed);
+    }
+    
     // one uniform IntType from interval [a, b]
     [[nodiscard]] IntType intFromRange(IntType a, IntType b) noexcept(false);
     // one uniform IntType from interval [0, b]

@@ -48,7 +48,7 @@ std::vector<IntType> Random::perm(std::size_t n, IntType a) noexcept {
 }
 
 std::vector<IntType> Random::distinct(std::size_t n, IntType a, IntType b) noexcept(false) {
-    assert(a <= static_cast<std::size_t>(b));
+    assert(a <= static_cast<IntType>(b));
     assert(n <= static_cast<std::size_t>(b - a + 1));
     
     std::vector<IntType> ret;
@@ -98,7 +98,7 @@ std::vector<IntType> Random::partition(std::size_t n, IntType sum, IntType min) 
 [[nodiscard]] IntType Random::weightedNumFromRange(IntType b, std::int64_t type) noexcept(false) {
     assert(b > 0);
     if (type > 0)
-        return static_cast<IntType>(b * betaDist(type + 1.0, 1.0));
+        return static_cast<IntType>((double)b * betaDist((double)type + 1.0, 1.0));
     else
-        return static_cast<IntType>(b * betaDist(1.0, -type + 1.0)); 
+        return static_cast<IntType>((double)b * betaDist(1.0, -(double)type + 1.0)); 
 }

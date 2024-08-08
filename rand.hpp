@@ -29,7 +29,7 @@ public:
     {}
 
 public:
-    void setSeed(IntType seed) {
+    inline void setSeed(IntType seed) {
         engine.seed(seed);
     }
     

@@ -9,6 +9,6 @@
  *
  * @note The caller is responsible for closing the file streams using its close() method.
  */
-std::pair<std::ofstream, std::ofstream> setupTest(uint64_t testNumber);
+std::pair<std::ofstream, std::ofstream> setupTest(std::uint64_t testNumber);
 
 #endif

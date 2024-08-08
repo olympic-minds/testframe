@@ -8,7 +8,7 @@
 class Graph {
 public:
     bool directed = false;
-    std::vector<std::vector<uint64_t>> graph;
+    std::vector<std::vector<std::uint64_t>> graph;
     enum class PrintFormat {
         PromptAdjecencyList,
         SolutionAdjecencyList,
@@ -18,9 +18,9 @@ public:
 private:
     void printPromptAdjecencyListTo(std::ostream &outputStream) const {
         outputStream << "{";
-        for (uint64_t i = 0; i < getNumberOfNodes(); ++i) {
+        for (std::uint64_t i = 0; i < getNumberOfNodes(); ++i) {
             outputStream << "{";
-            for (uint64_t j = 0; j < graph[i].size(); ++j) {
+            for (std::uint64_t j = 0; j < graph[i].size(); ++j) {
                 outputStream << graph[i][j];
                 if (j != graph[i].size() - 1) {
                     outputStream << ",";
@@ -44,9 +44,9 @@ private:
         }
 
         outputStream << "{";
-        for (uint64_t i = 0; i < nodes; ++i) {
+        for (std::uint64_t i = 0; i < nodes; ++i) {
             outputStream << "{";
-            for (uint64_t j = 0; j < nodes; ++j) {
+            for (std::uint64_t j = 0; j < nodes; ++j) {
                 outputStream << matrix[i][j];
                 if (j != graph[i].size() - 1) {
                     outputStream << ",";
@@ -61,16 +61,16 @@ private:
     }
 
     void printSolutionAdjecencyMatrixTo(std::ostream &outputStream) const {
-        uint64_t nodes = getNumberOfNodes();
-        outputStream << nodes << "\n";
-
+        std::uint64_t nodes = getNumberOfNodes();
+        outputStream << nodes  << "\n";
+        
         std::vector<std::vector<int>> matrix(nodes, std::vector<int>(nodes, 0));
         for (auto [from, to] : getEdges()) {
             matrix[from][to] = 1;
         }
 
-        for (uint64_t i = 0; i < nodes; ++i) {
-            for (uint64_t j = 0; j < nodes; ++j) {
+        for (std::uint64_t i = 0; i < nodes; ++i) {
+            for (std::uint64_t j = 0; j < nodes; ++j) {
                 outputStream << matrix[i][j];
                 if (j != graph[i].size() - 1) {
                     outputStream << " ";
@@ -89,24 +89,25 @@ private:
         }
     }
 public:
-    Graph(std::vector<std::vector<uint64_t>> g, bool directed = false) : directed(directed), graph(g) {
-    }
+    Graph(std::vector<std::vector<std::uint64_t>> g, bool directed = false)
+        : directed(directed),
+          graph(g) {}
 
-    uint64_t getNumberOfNodes() const {
+    std::uint64_t getNumberOfNodes() const {
         return graph.size();
     }
 
-    uint64_t getNumberOfEdges() const {
+    std::uint64_t getNumberOfEdges() const {
         return std::accumulate(graph.begin(), graph.end(), 0,
-                               [](const uint64_t x, const auto &a) { return x + a.size(); });
+                               [](const std::uint64_t x, const auto &a) { return x + a.size(); });
     }
 
-    std::vector<std::vector<uint64_t>> getAdjecencyMatrix() const {
-        uint64_t n = getNumberOfNodes();
-        std::vector<std::vector<uint64_t>> adjMatrix(n, std::vector<uint64_t>(n, 0));
+    std::vector<std::vector<std::uint64_t>> getAdjecencyMatrix() const {
+        std::uint64_t n = getNumberOfNodes();
+        std::vector<std::vector<std::uint64_t>> adjMatrix(n, std::vector<std::uint64_t>(n, 0));
 
-        for (uint64_t i = 0; i < n; ++i) {
-            for (uint64_t j : graph[i]) {
+        for (std::uint64_t i = 0; i < n; ++i) {
+            for (std::uint64_t j : graph[i]) {
                 adjMatrix[i][j] = 1;
             }
         }
@@ -119,7 +120,7 @@ public:
             return false;
         }
 
-        for (uint64_t node = 0; node < getNumberOfNodes(); ++node) {
+        for (std::uint64_t node = 0; node < getNumberOfNodes(); ++node) {
             if (graph[node] != other.graph[node]) {
                 return false;
             }
@@ -127,14 +128,14 @@ public:
         return true;
     }
 
-    operator std::vector<std::vector<uint64_t>>() const {
+    operator std::vector<std::vector<std::uint64_t>>() const {
         return graph;
     }
 
-    std::vector<std::pair<uint64_t, uint64_t>> getEdges() const {
-        std::vector<std::pair<uint64_t, uint64_t>> edges;
-        for (uint64_t v = 0; v < getNumberOfNodes(); ++v)
-            for (uint64_t u : graph[v])
+    std::vector<std::pair<std::uint64_t, std::uint64_t>> getEdges() const {
+        std::vector<std::pair<std::uint64_t, std::uint64_t>> edges;
+        for (std::uint64_t v = 0; v < getNumberOfNodes() ; ++v)
+            for (std::uint64_t u : graph[v])
                 edges.emplace_back(v, u);
         return edges;
     }
@@ -159,34 +160,34 @@ public:
     }
 
     static Graph readGraph(std::istream &inputStream) {
-        uint64_t nodes, numberOfEdges;
+        std::uint64_t nodes, numberOfEdges;
         inputStream >> nodes >> numberOfEdges;
-        std::vector<std::vector<uint64_t>> g(nodes);
-        for (uint64_t i = 0; i < numberOfEdges; i++) {
-            uint64_t a, b;
+        std::vector<std::vector<std::uint64_t>> g(nodes);
+        for (std::uint64_t i = 0; i < numberOfEdges; i++) {
+            std::uint64_t a, b;
             inputStream >> a >> b;
             g[a].push_back(b);
         }
         return Graph(g);
     }
 
-    static Graph constructEmptyGraph(uint64_t nodes);
-    static Graph constructUndirectedClique(uint64_t nodes);
-    static Graph constructPathGraph(uint64_t nodes, uint64_t numberOfComponents = 1);
-    static Graph constructShallowForestGraph(uint64_t nodes, uint64_t numberOfTrees);
-    static Graph constructShallowTreeGraph(uint64_t nodes);
-    static Graph constructForestGraph(uint64_t nodes, uint64_t numberOfTrees);
-    static Graph constructTreeGraph(uint64_t nodes);
-    static Graph constructSimplerJellyfishGraph(uint64_t nodes, uint64_t cycleSize, uint64_t minTentacleLength,
-                                                uint64_t numberOfTentacles);
-    static Graph constructStarfishGraph(uint64_t nodes, uint64_t minRayLength, uint64_t numberOfRays);
-    static Graph constructSilkwormGraph(uint64_t nodes);
-    static Graph constructTreeOfBoundedDegreeGraph(uint64_t nodes, uint64_t minDegree, uint64_t maxDegree);
-    static Graph constructSparseGraph(uint64_t nodes);
-    static Graph constructDenseGraph(uint64_t nodes);
+    static Graph constructEmptyGraph(std::uint64_t nodes);
+    static Graph constructUndirectedClique(std::uint64_t nodes);
+    static Graph constructPathGraph(std::uint64_t nodes, std::uint64_t numberOfComponents = 1);
+    static Graph constructShallowForestGraph(std::uint64_t nodes, std::uint64_t numberOfTrees);
+    static Graph constructShallowTreeGraph(std::uint64_t nodes);
+    static Graph constructForestGraph(std::uint64_t nodes, std::uint64_t numberOfTrees);
+    static Graph constructTreeGraph(std::uint64_t nodes);
+    static Graph constructSimplerJellyfishGraph(std::uint64_t nodes, std::uint64_t cycleSize, std::uint64_t minTentacleLength,
+                                                   std::uint64_t numberOfTentacles);
+    static Graph constructStarfishGraph(std::uint64_t nodes, std::uint64_t minRayLength, std::uint64_t numberOfRays);
+    static Graph constructSilkwormGraph(std::uint64_t nodes);
+    static Graph constructTreeOfBoundedDegreeGraph(std::uint64_t nodes, std::uint64_t minDegree, std::uint64_t maxDegree);
+    static Graph constructSparseGraph(std::uint64_t nodes);
+    static Graph constructDenseGraph(std::uint64_t nodes);
 
     bool isClique() {
-        uint64_t numberOfEdges = getNumberOfEdges();
+        std::uint64_t numberOfEdges = getNumberOfEdges();
         return (directed ? numberOfEdges : numberOfEdges * 2) == getNumberOfNodes() * (getNumberOfNodes() - 1);
     }
 
@@ -194,7 +195,7 @@ public:
         return undirectedConnectedComponentsNumber() == 1;
     }
 
-    uint64_t undirectedConnectedComponentsNumber();
+    std::uint64_t undirectedConnectedComponentsNumber();
 };
 
 #endif

@@ -93,7 +93,7 @@ Graph Graph::constructShallowForestGraph(std::uint64_t nodes, std::uint64_t numb
             sum += pa[pnt++];
             continue;
         }
-        std::uint64_t neighbor = rnd.intFromRange(root, i);
+        std::uint64_t neighbor = rnd.intFromRange(root, i-1);
         g[neighbor].push_back(i);
         g[i].push_back(neighbor);
     }
@@ -234,7 +234,7 @@ Graph Graph::constructTreeOfBoundedDegreeGraph(std::uint64_t nodes, std::uint64_
     while (!availableLeaves.empty() && !inTree.empty()) {
         std::uint64_t currentNode = inTree.front();
         inTree.pop();
-        std::uint64_t degree = rnd.intFromRange(std::min(minDegree, availableLeaves.size() - 1),
+        std::uint64_t degree = rnd.intFromRange(std::min(minDegree, (std::uint64_t)availableLeaves.size()),
                                    std::min(maxDegree, (std::uint64_t)availableLeaves.size()));
         while (degree--) {
             std::uint64_t nextNode = availableLeaves.front();
@@ -248,10 +248,10 @@ Graph Graph::constructTreeOfBoundedDegreeGraph(std::uint64_t nodes, std::uint64_
 }
 
 Graph Graph::constructSparseGraph(std::uint64_t nodes) {
-    std::uint64_t number_of_edges = rnd.weightedNumFromRange(nodes * static_cast<std::uint64_t>(std::sqrt(nodes)) / 2, -1);
+    std::uint64_t number_of_edges = rnd.intFromRange(nodes * static_cast<std::uint64_t>(std::sqrt(nodes)) / 2);
     std::set<std::pair<int, int>> edges;
     while ((std::uint64_t)edges.size() < number_of_edges) {
-        auto vert = rnd.distinct(2, nodes);
+        auto vert = rnd.distinct(2, nodes - 1);
         std::uint64_t a = vert[0], b = vert[1];
         if (a > b) {
             std::swap(a, b);
@@ -276,10 +276,9 @@ Graph Graph::constructDenseGraph(std::uint64_t nodes) {
     }
 
     rnd.shuffle(all_edges);
-    std::uint64_t number_of_edges = rnd.weightedNumFromRange(
+    std::uint64_t number_of_edges = rnd.intFromRange(
         nodes * static_cast<std::uint64_t>(std::sqrt(nodes)) / 2,
-        nodes * (nodes - 1) / 2,
-        1
+        nodes * (nodes - 1) / 2
     );
     all_edges.resize(number_of_edges);
     std::vector<std::vector<std::uint64_t>> g(nodes);

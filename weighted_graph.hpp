@@ -145,6 +145,8 @@ public:
         return WeightedGraph(g);
     }
 
+    WeightedGraph &relabelNodes();
+
     bool operator==(const WeightedGraph &other) const {
         if (getNumberOfNodes() != other.getNumberOfNodes()) {
             return false;

@@ -185,6 +185,8 @@ public:
     static Graph constructTreeOfBoundedDegreeGraph(std::uint64_t nodes, std::uint64_t minDegree, std::uint64_t maxDegree);
     static Graph constructSparseGraph(std::uint64_t nodes);
     static Graph constructDenseGraph(std::uint64_t nodes);
+    static Graph constructRandomDAG(std::uint64_t nodes, std::uint64_t edges, std::uint64_t height);
+    static Graph constructDirectedGraph(Graph graph);
 
     bool isClique() {
         std::uint64_t numberOfEdges = getNumberOfEdges();

@@ -6,6 +6,22 @@
 #include <utility>
 #include <cmath>
 
+WeightedGraph& WeightedGraph::relabelNodes() {
+    auto perm = rnd.perm(getNumberOfNodes());
+    std::vector<std::uint64_t> inv_perm(getNumberOfNodes());
+    for (std::uint64_t i = 0; i < getNumberOfNodes(); i++) {
+        inv_perm[perm[i]] = i;
+    }
+    auto graph_copy = graph;
+    for (std::uint64_t v = 0; v < getNumberOfNodes(); ++v) {
+        graph[v] = graph_copy[inv_perm[v]];
+        for (auto& neigh : graph[v]) {
+            neigh.first = perm[neigh.first];
+        }
+    }
+    return *this;
+}
+
 WeightedGraph WeightedGraph::addRandomWeights(Graph g, std::int64_t w_min, std::int64_t w_max) {
     std::vector<std::vector<std::pair<std::uint64_t, std::int64_t>>> graph(g.getNumberOfNodes());
     for (auto [u, v] : g.getEdges()) {
@@ -18,5 +34,5 @@ WeightedGraph WeightedGraph::addRandomWeights(Graph g, std::int64_t w_min, std::
             graph[u].push_back({v, w});
         }
     }
-    return WeightedGraph(graph);
+    return WeightedGraph(graph).relabelNodes();
 }

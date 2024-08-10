@@ -7,7 +7,6 @@
 
 class Graph {
 public:
-    bool directed = false;
     std::vector<std::vector<std::uint64_t>> graph;
     enum class PrintFormat {
         PromptAdjecencyList,
@@ -48,7 +47,7 @@ private:
             outputStream << "{";
             for (std::uint64_t j = 0; j < nodes; ++j) {
                 outputStream << matrix[i][j];
-                if (j != graph[i].size() - 1) {
+                if (j != nodes - 1) {
                     outputStream << ",";
                 }
             }
@@ -72,7 +71,7 @@ private:
         for (std::uint64_t i = 0; i < nodes; ++i) {
             for (std::uint64_t j = 0; j < nodes; ++j) {
                 outputStream << matrix[i][j];
-                if (j != graph[i].size() - 1) {
+                if (j != nodes - 1) {
                     outputStream << " ";
                 }
             }
@@ -90,8 +89,7 @@ private:
     }
 public:
     Graph(std::vector<std::vector<std::uint64_t>> g, bool directed = false)
-        : directed(directed),
-          graph(g) {}
+        : graph(g) {}
 
     std::uint64_t getNumberOfNodes() const {
         return graph.size();
@@ -188,7 +186,7 @@ public:
 
     bool isClique() {
         std::uint64_t numberOfEdges = getNumberOfEdges();
-        return (directed ? numberOfEdges : numberOfEdges * 2) == getNumberOfNodes() * (getNumberOfNodes() - 1);
+        return numberOfEdges  == getNumberOfNodes() * (getNumberOfNodes() - 1);
     }
 
     bool isConnected() {

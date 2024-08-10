@@ -48,7 +48,7 @@ private:
             outputStream << "{";
             for (std::uint64_t j = 0; j < nodes; ++j) {
                 outputStream << matrix[i][j];
-                if (j != graph[i].size() - 1) {
+                if (j != nodes - 1) {
                     outputStream << ",";
                 }
             }
@@ -72,7 +72,7 @@ private:
         for (std::uint64_t i = 0; i < nodes; ++i) {
             for (std::uint64_t j = 0; j < nodes; ++j) {
                 outputStream << matrix[i][j];
-                if (j != graph[i].size() - 1) {
+                if (j != nodes - 1) {
                     outputStream << " ";
                 }
             }

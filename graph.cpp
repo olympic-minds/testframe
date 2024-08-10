@@ -319,11 +319,11 @@ Graph Graph::constructDirectedGraph(Graph graph) {
     assert(!graph.directed);
     for (auto [u, v] : graph.getEdges()) {
         if (u <= v) {
-            int r = rnd.intFromRange(100);
-            if(r <= 66) {
+            int r = rnd.intFromRange(2);
+            if(r != 0) {
                 g[u].push_back(v);
             }
-            if(r >= 33) {
+            if(r != 2) {
                 g[v].push_back(u);
             }
         }

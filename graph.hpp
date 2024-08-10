@@ -7,6 +7,7 @@
 
 class Graph {
 public:
+    bool directed = false;
     std::vector<std::vector<std::uint64_t>> graph;
     enum class PrintFormat {
         PromptAdjecencyList,
@@ -89,7 +90,8 @@ private:
     }
 public:
     Graph(std::vector<std::vector<std::uint64_t>> g, bool directed = false)
-        : graph(g) {}
+        : directed(directed),
+          graph(g) {}
 
     std::uint64_t getNumberOfNodes() const {
         return graph.size();
@@ -186,7 +188,7 @@ public:
 
     bool isClique() {
         std::uint64_t numberOfEdges = getNumberOfEdges();
-        return numberOfEdges  == getNumberOfNodes() * (getNumberOfNodes() - 1);
+        return (directed ? numberOfEdges : numberOfEdges * 2) == getNumberOfNodes() * (getNumberOfNodes() - 1);
     }
 
     bool isConnected() {

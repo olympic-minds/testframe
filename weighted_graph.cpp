@@ -9,10 +9,13 @@
 WeightedGraph WeightedGraph::addRandomWeights(Graph g, std::int64_t w_min, std::int64_t w_max) {
     std::vector<std::vector<std::pair<std::uint64_t, std::int64_t>>> graph(g.getNumberOfNodes());
     for (auto [u, v] : g.getEdges()) {
-        if(u <= v) {
-            std::int64_t w = rnd.intFromRange(w_min, w_max);
+        std::int64_t w = rnd.intFromRange(w_min, w_max);
+        if (!g.directed && u <= v) {
             graph[u].push_back({v, w});
             graph[v].push_back({u, w});
+        }
+        if (g.directed) {
+            graph[u].push_back({v, w});
         }
     }
     return WeightedGraph(graph);

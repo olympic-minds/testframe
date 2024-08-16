@@ -293,22 +293,22 @@ Graph Graph::constructRandomDAG(std::uint64_t nodes, std::uint64_t edges, std::u
     std::vector<std::vector<std::uint64_t>> g(nodes);
     std::vector pa = rnd.partition(height, nodes, 1);
     std::vector<std::vector<std::uint64_t>> layers(pa.size());
-    int number_of_layers = pa.size();
-    for (int i = 1; i < pa.size(); i++) {
+    uint64_t number_of_layers = pa.size();
+    for (uint64_t i = 1; i < pa.size(); i++) {
         pa[i] += pa[i - 1];
     } 
     int j = 0;
-    for (int i = 0; i < number_of_layers; i++) {
+    for (uint64_t i = 0; i < number_of_layers; i++) {
         while (j < pa[i]) {
             layers[i].push_back(j);
             j++;
         }
     } 
-    for (int i = 0; i < edges; i ++) { // high_layer -> edge -> low_layer
-        int from_layer = rnd.intFromRange(1, number_of_layers - 1);
-        int to_layer = rnd.intFromRange(0, from_layer - 1);
-        int from_node = layers[from_layer][rnd.intFromRange(0, layers[from_layer].size() - 1)];
-        int to_node = layers[to_layer][rnd.intFromRange(0, layers[to_layer].size() - 1)];
+    for (uint64_t i = 0; i < edges; i ++) { // high_layer -> edge -> low_layer
+        uint64_t from_layer = rnd.intFromRange(1, number_of_layers - 1);
+        uint64_t to_layer = rnd.intFromRange(0, from_layer - 1);
+        uint64_t from_node = layers[from_layer][rnd.intFromRange(0, layers[from_layer].size() - 1)];
+        uint64_t to_node = layers[to_layer][rnd.intFromRange(0, layers[to_layer].size() - 1)];
         g[from_node].push_back(to_node);
     }
     return Graph(g, true).relabelNodes();
@@ -319,7 +319,7 @@ Graph Graph::constructDirectedGraph(Graph graph) {
     assert(!graph.directed);
     for (auto [u, v] : graph.getEdges()) {
         if (u <= v) {
-            int r = rnd.intFromRange(2);
+            uint64_t r = rnd.intFromRange(2);
             if(r != 0) {
                 g[u].push_back(v);
             }
